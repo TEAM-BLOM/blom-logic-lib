@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAssembly Test</title>
+</head>
+<body>
+    <h1>WebAssembly Test</h1>
+
+    <h3 id="result">result: </h3>
+    <div id="check-position">
+        <form id="submit-form">
+            <input type="text" id="pos" placeholder="x, y, turn">
+            <button type="submit">submit</button>
+        </form>
+        
+        <form id="check-form">
+            <input type="text" id="check-pos" placeholder="x, y">
+            <button type="submit">check-win</button>
+        </form>
+    </div>
+
+    <script>
+        const submitForm = document.getElementById("submit-form");
+        submitForm.addEventListener("submit", submit);
+
+        const checkForm = document.getElementById("check-form");
+        checkForm.addEventListener("submit", execute);
+
+        const tmp_board = new Int32Array(255);
+        function submit(e) {
+            // if (e.key !== "Enter") return;
+            e.preventDefault();
+            const pos = document.getElementById("pos").value;
+            pos.value = "";
+            
+            const [x, y, turn] = pos.split(",").map(Number);
+            if (x == null || y == null || turn == null) {
+                console.log("Invalid input");
+                return;
+            } else if (turn != -1 && turn != 1) {
+                console.log("Invalid input");
+                return;
+            } else if (x < 0 || x >= 15 || y < 0 || y >= 15) {
+                console.log("Invalid input");
+                return;
+            }
+            console.log(x, y);
+
+            var div = document.getElementById("check-position");
+            var newP = document.createElement("p");
+            newP.innerHTML = `x: ${x}, y: ${y}, turn: ${turn}`;
+            div.appendChild(newP);
+
+            index = 15*y + x;
+            tmp_board[index] = turn;
+            
+        }
+
+        async function execute(e) {
+            e.preventDefault();
+            const result = await run();
+            document.getElementById("result").innerHTML = `result: ${result}`;
+        }
+    </script>
+
+    <script type="module">
+        import init, { init_board, init_check, check_win } from "../pkg/check_logic.js";
+
+        async function run() {
+            const module = await init();
+            const pos = document.getElementById("check-pos").value;
+            const [x, y] = pos.split(",").map(Number);
+            if (x == null || y == null) {
+                console.log("Invalid input");
+                return;
+            } else if (x < 0 || x >= 15 || y < 0 || y >= 15) {
+                console.log("Invalid input");
+                return;
+            }
+            // const tmp = new Int32Array(255);
+            // tmp[112] = -1;
+            // tmp[96] = -1;
+            // tmp[80] = -1;
+            // tmp[128] = -1;
+            // tmp[144] = -1;
+            // tmp[160] = 1;
+            // console.log(tmp);
+            const board = init_board(tmp_board);
+            console.log(board);
+            const check = init_check(board, x, y);
+            console.log(check);
+
+            let win = 0;
+            try {
+                win = check_win(check);
+            } catch (e) {
+                return e;
+            }
+            return win;
+        }
+
+        window.run = run;
+    </script>
+    
+    
+</body>
+</html>

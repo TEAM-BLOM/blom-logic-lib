@@ -1,0 +1,8 @@
+.vscode
+emsdk
+*.exe
+*.out
+*.pdb
+build
+lib-rust/check-logic/target
+lib-rust/check-logic/pkg
