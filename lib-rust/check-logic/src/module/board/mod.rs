@@ -10,7 +10,7 @@ pub struct Board {
 impl Board {
     #[wasm_bindgen(constructor)]
     pub fn new(size: usize) -> Board {
-        if size < 225 {
+        if size != 225 {
             panic!("Board size must be 225!");
         }
 
