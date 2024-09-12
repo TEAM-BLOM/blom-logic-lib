@@ -5,4 +5,5 @@ emsdk
 *.pdb
 build
 lib-rust/check-logic/target
-lib-rust/check-logic/pkg
+lib-rust/check-logic/pkg-1
+lib-rust/*-test
