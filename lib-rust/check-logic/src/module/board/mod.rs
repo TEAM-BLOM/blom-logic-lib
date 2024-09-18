@@ -3,7 +3,6 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub struct Board {
     board: Vec<i32>,
-    size: usize,
 }
 
 #[wasm_bindgen]
@@ -16,9 +15,20 @@ impl Board {
 
         Board {
             board: vec![0; size as usize],
-            size: size,
         }
     }
+}
+
+pub fn check_valid_board(board: &[i32]) -> bool {
+    if board.len() != 225 {
+        return false;
+    } 
+
+    if board.iter().filter(|&&value| value != -1 && value != 0 && value != 1).count() > 0 {
+        return false;
+    }
+
+    return true;
 }
 
 impl Board {
@@ -26,8 +36,13 @@ impl Board {
         &self.board
     }
 
-    pub fn set_board(&mut self, board: &[i32]) {
-        self.board = board.to_vec();
+    pub fn set_board(&mut self, board: &[i32]) -> Result<(), String> {
+        if check_valid_board(&board) {
+            self.board = board.to_vec();
+            return Ok(());
+        } else {
+            return Err("Board is invalid".to_string());
+        }
     }
 
     pub fn convert_to_xy(&self, index: usize) -> (usize, usize) {

@@ -40,12 +40,13 @@ impl Check {
         self.current = (x, y);
     }
 
-    pub fn set_new_board(&mut self, _board: Board, x: usize, y: usize) {
-        self.board = _board;
+    pub fn set_new_board(&mut self, _board: &[i32], x: usize, y: usize) -> Result<(), String> {
+        self.board.set_board(&_board)?;
         self.current = (x, y);
+        Ok(())
     }
 
-    pub fn check_loop(&self, mut x: usize, mut y: usize, dx: i32, dy: i32) -> i32 {
+    pub fn check_loop33(&self, mut x: usize, mut y: usize, dx: i32, dy: i32) -> i32 {
         let mut blk = false;
         let mut cnt = 0;
         'direction: loop {
@@ -133,7 +134,7 @@ impl Check {
         return cnt;
     }
 
-    pub fn check_win(&self) -> Result<bool, i32> /* build JsError, debug i32 */ {
+    pub fn check_win(&self) -> Result<bool, JsError> /* build JsError, debug i32 */ {
         let (_x, _y) = self.current;
         let mut win: bool = false;
 
@@ -143,8 +144,8 @@ impl Check {
         println!("idx: {}", idx);
         let turn = self.board.get_board()[idx];
         if turn == 0 {
-            return Err(0);
-            // return Err(JsError::new("this position looks Invalid"));
+            // return Err(0);
+            return Err(JsError::new("this position looks Invalid"));
         }
 
         for i in (0..8).step_by(2) {
@@ -221,7 +222,7 @@ impl Check {
         return Ok(win);
     }
     
-    pub fn check_33(&self) -> Result<bool, i32> /* build JsError, debug i32 */{
+    pub fn check_33(&self) -> Result<bool, JsError> /* build JsError, debug i32 */{
         let (_x, _y) = self.current;
         let dir: [(i32, i32); 4] = [(1, 0), (0, 1), (1, 1), (-1, 1)];
 
@@ -230,8 +231,8 @@ impl Check {
             
             return Ok(false);
         } else if self.board.get_board()[tmp] == 0 {
-            return Err(0);
-            // return Err(JsError::new("this position looks Invalid"));
+            // return Err(0);
+            return Err(JsError::new("this position looks Invalid"));
         }
 
         let mut is33: bool = false;
@@ -243,7 +244,7 @@ impl Check {
             let mut x = _x;
             let mut y = _y;
             // direction 1
-            let cnt_1 = self.check_loop(x, y, dx_1, dy_1);
+            let cnt_1 = self.check_loop33(x, y, dx_1, dy_1);
 
             dx_1 = -dir[i].0;
             dy_1 = -dir[i].1;
@@ -251,7 +252,7 @@ impl Check {
             x = _x;
             y = _y;
             // direction 2
-            let cnt_2 = self.check_loop(x, y, dx_1, dy_1);
+            let cnt_2 = self.check_loop33(x, y, dx_1, dy_1);
 
             if cnt_1 + cnt_2 == 2 {
                 cal33 += 1;
@@ -269,22 +270,104 @@ impl Check {
         }
         return Ok(false);
     }
+
+    pub fn check_loop44(&self, mut x: usize, mut y: usize, dx: i32, dy: i32) -> i32 {
+        let mut blk = false;
+        let mut cnt = 0;
+        'direction: loop {
+            match add_usize_int32(x, dx) {
+                Some(_x) => x = _x,
+                None => {
+                    break 'direction
+                },
+            }
+            match add_usize_int32(y, dy) {
+                Some(_y) => y = _y,
+                None => {
+                    break 'direction
+                },
+            }
+            let idx = self.board.convert_to_index(x, y);
+
+            let (x_next, y_next): (usize, usize);
+            match add_usize_int32(x, dx) {
+                Some(_x) => x_next = _x,
+                None => x_next = 1000,
+            }
+            match add_usize_int32(y, dy) {
+                Some(_y) => y_next = _y,
+                None => y_next = 1000,
+            }
+
+            if self.board.is_valid(x, y) {
+                let cur = self.board.get_board()[idx];
+                if cur == 1 {
+                    cnt += 1;
+                } else if cur == -1 {
+                    /*
+                    현재 돌이 흰돌일 경우
+                        44를 체크하는 경우 현재의 4가 막혔든 막혔지 않든 44는 성립되므로,
+                        다른 것을 따지지 않고 바로 break
+                    */
+                    break 'direction;
+                } else if cur == 0 {
+                    if blk {
+                        break 'direction;
+                    } else {
+                        // 빈 곳일 경우는 33의 경우와 동일하므로, 그대로 사용
+                        if self.board.is_valid(x_next, y_next) {
+                            blk = true;
+                            if self.board.get_board()[self.board.convert_to_index(x_next, y_next)] == 1 {
+                                continue;
+                            } else {
+                                break 'direction;
+                            }
+                        } else {
+                            break 'direction;
+                        }
+                    }
+                }
+            } else {
+                break 'direction;
+            }
+        }
+
+        return cnt;
+    }
     
-    // pub fn check_44(&self) -> Result<bool, JsError> /* build JsError, debug i32 */ {
-    //     let (_x, _y) = self.current;
-    //     let dir: [(i32, i32); 4] = [(1, 0), (0, 1), (1, 1), (-1, 1)];
+    pub fn check_44(&self) -> Result<bool, JsError> /* build JsError, debug i32 */ {
+        let (_x, _y) = self.current;
+        let dir: [(i32, i32); 4] = [(1, 0), (0, 1), (1, 1), (-1, 1)];
 
-    //     let tmp = self.board.convert_to_index(_x, _y);
-    //     if self.board.get_board()[tmp] == -1 {
-    //         return Ok(false);
-    //     } else if self.board.get_board()[tmp] == 0 {
-    //         // return Err(0);
-    //         return Err(JsError::new("this position looks Invalid"));
-    //     }
+        let tmp = self.board.convert_to_index(_x, _y);
+        if self.board.get_board()[tmp] == -1 {
+            return Ok(false);
+        } else if self.board.get_board()[tmp] == 0 {
+            // return Err(0);
+            return Err(JsError::new("this position looks Invalid"));
+        }
 
-    //     let mut cnt_4 = 0;
-    //     let mut is_44 = false;
+        let mut cal44: i32 = 0;
+        let mut is44 = false;
 
+        for i in 0..4 {
+            let dx = dir[i].0;
+            let dy = dir[i].1;
 
-    // }
+            let cnt_1 = self.check_loop44(_x, _y, dx, dy);
+            let cnt_2 = self.check_loop44(_x, _y, -dx, -dy);
+
+            if cnt_1 + cnt_2 == 3 {
+                cal44 += 1;
+            } else if cnt_1 == 3 && cnt_2 == 3 {
+                is44 = true;
+            }
+            println!("{}: cnt1-{}, cnt2-{}", i, cnt_1, cnt_2);
+        }
+
+        if is44 || cal44 >= 2 {
+            return Ok(true);
+        }
+        return Ok(false);
+    }
 }

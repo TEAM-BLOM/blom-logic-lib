@@ -33,6 +33,13 @@ function addHeapObject(obj) {
     return idx;
 }
 
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
+}
+
 let cachedUint32ArrayMemory0 = null;
 
 function getUint32ArrayMemory0() {
@@ -49,6 +56,16 @@ function passArray32ToWasm0(arg, malloc) {
     getUint32ArrayMemory0().set(arg, ptr / 4);
     WASM_VECTOR_LEN = arg.length;
     return ptr;
+}
+/**
+* @param {Int32Array} _board
+* @returns {boolean}
+*/
+export function check_valid_board(_board) {
+    const ptr0 = passArray32ToWasm0(_board, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.check_valid_board(ptr0, len0);
+    return ret !== 0;
 }
 
 let cachedDataViewMemory0 = null;
@@ -95,12 +112,6 @@ export function init_board(_board) {
     }
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-    return instance.ptr;
-}
 /**
 * @param {Board} _board
 * @param {number} x
@@ -126,6 +137,33 @@ export function init_check(_board, x, y) {
 }
 
 /**
+* @param {Check} origin
+* @param {Int32Array} new_board
+* @param {number} x
+* @param {number} y
+* @returns {Check}
+*/
+export function update_check_board(origin, new_board, x, y) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        _assertClass(origin, Check);
+        var ptr0 = origin.__destroy_into_raw();
+        const ptr1 = passArray32ToWasm0(new_board, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.update_check_board(retptr, ptr0, ptr1, len1, x, y);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return Check.__wrap(r0);
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
 * @param {Check} check
 * @returns {boolean}
 */
@@ -133,8 +171,7 @@ export function check_win(check) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         _assertClass(check, Check);
-        var ptr0 = check.__destroy_into_raw();
-        wasm.check_win(retptr, ptr0);
+        wasm.check_win(retptr, check.__wbg_ptr);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
@@ -142,6 +179,69 @@ export function check_win(check) {
             throw takeObject(r1);
         }
         return r0 !== 0;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {Check} check
+* @returns {boolean}
+*/
+export function check_33(check) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        _assertClass(check, Check);
+        wasm.check_33(retptr, check.__wbg_ptr);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return r0 !== 0;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {Check} check
+* @returns {boolean}
+*/
+export function check_44(check) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        _assertClass(check, Check);
+        wasm.check_44(retptr, check.__wbg_ptr);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return r0 !== 0;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
+/**
+* @param {Check} check
+* @returns {number}
+*/
+export function print_address(check) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        _assertClass(check, Check);
+        wasm.print_address(retptr, check.__wbg_ptr);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        if (r2) {
+            throw takeObject(r1);
+        }
+        return r0 >>> 0;
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }

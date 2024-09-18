@@ -2,6 +2,11 @@
 /* eslint-disable */
 /**
 * @param {Int32Array} _board
+* @returns {boolean}
+*/
+export function check_valid_board(_board: Int32Array): boolean;
+/**
+* @param {Int32Array} _board
 * @returns {Board}
 */
 export function init_board(_board: Int32Array): Board;
@@ -13,10 +18,33 @@ export function init_board(_board: Int32Array): Board;
 */
 export function init_check(_board: Board, x: number, y: number): Check;
 /**
+* @param {Check} origin
+* @param {Int32Array} new_board
+* @param {number} x
+* @param {number} y
+* @returns {Check}
+*/
+export function update_check_board(origin: Check, new_board: Int32Array, x: number, y: number): Check;
+/**
 * @param {Check} check
 * @returns {boolean}
 */
 export function check_win(check: Check): boolean;
+/**
+* @param {Check} check
+* @returns {boolean}
+*/
+export function check_33(check: Check): boolean;
+/**
+* @param {Check} check
+* @returns {boolean}
+*/
+export function check_44(check: Check): boolean;
+/**
+* @param {Check} check
+* @returns {number}
+*/
+export function print_address(check: Check): number;
 /**
 */
 export class Board {
@@ -42,15 +70,20 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly init_board: (a: number, b: number, c: number) => void;
-  readonly init_check: (a: number, b: number, c: number, d: number) => void;
-  readonly check_win: (a: number, b: number) => void;
   readonly __wbg_board_free: (a: number, b: number) => void;
   readonly board_new: (a: number) => number;
   readonly __wbg_check_free: (a: number, b: number) => void;
   readonly check_new: (a: number, b: number, c: number) => number;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
+  readonly check_valid_board: (a: number, b: number) => number;
+  readonly init_board: (a: number, b: number, c: number) => void;
+  readonly init_check: (a: number, b: number, c: number, d: number) => void;
+  readonly update_check_board: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+  readonly check_win: (a: number, b: number) => void;
+  readonly check_33: (a: number, b: number) => void;
+  readonly check_44: (a: number, b: number) => void;
+  readonly print_address: (a: number, b: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
