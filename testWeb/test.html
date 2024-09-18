@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+</head>
+<body>
+    <script type="module">
+        import init, { init_board, init_check, update_check_board, check_win, print_address } from "../lib-rust/check-logic/pkg/check_logic.js";
+        const module = await init();
+        
+        async function test1() {
+            const _board = new Int32Array(225);
+
+            const board = await init_board(_board);
+            console.log(board);
+
+            // board.free();
+
+            return board;
+        }
+
+        async function test2(board) {
+            const check = await init_check(board, 1, 1);
+            // const win = await check_win(check);
+            // console.log(win);
+
+            // check.free();
+            console.log(board);
+            return check;
+        }
+
+        async function test3(check) {
+            const new_board = new Int32Array(225);
+            console.log(print_address(check));
+            
+            new_board[16] = 1;
+
+            const new_check = await update_check_board(check, new_board, 1, 1);
+            
+            const win = await check_win(new_check);
+            console.log(print_address(new_check));
+
+            console.log(new_check);
+            // new_check.free();
+            return new_check;
+        }
+
+        const board = await test1();
+        const check = await test2(board);
+        // console.log(board);
+        const new_check = await test3(check);
+        const win = await check_win(new_check);
+        console.log(win);
+    </script>
+</body>
+</html>
