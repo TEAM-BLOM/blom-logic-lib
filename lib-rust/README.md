@@ -20,16 +20,16 @@ const module = await init();
 This lib provides functions below.  
 <b>All of functions can return error(JsError), so you should handle it.</b>
 
-- init objects:
+- <b>init objects:</b>
   - `init_board(board: Int32Array) => Board` : initialize board, <b>This function already have check_valid_board logic</b>
   - `init_check(board: Board, x: number, y: number) => Check` : initialize check
-- update objects:
+- <b>update objects:</b>
   - `update_check_board(check: Check, new_board: Int32Array, x: number, y: number) => Check` : update check board with new board and x, y, <b>This function also have check_valid_board logic</b>
-- check for a game:
+- <b>check for a game:</b>
   - `check_win(check: Check) => boolean` : check if the game is win
   - `check_33(check: Check) => boolean` : check if there is 33 pattern
   - `check_44(check: Check) => boolean` : check if there is 44 pattern
-- check for debug:
+- <b>check for debug:</b>
   - `check_valid_board(board: Int32Array) => boolean` : check if the board is valid
   - `print_address(check: Check) => number` : print address of check
 
