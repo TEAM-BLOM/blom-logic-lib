@@ -59,4 +59,8 @@ impl Board {
     pub fn is_valid(&self, x: usize, y: usize) -> bool {
         x < 15 && y < 15
     }
+
+    pub fn get_value(&self, x: usize, y: usize) -> i32 {
+        self.board[self.convert_to_index(x, y)]
+    }
 }

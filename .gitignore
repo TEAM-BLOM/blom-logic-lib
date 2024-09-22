@@ -6,3 +6,4 @@ emsdk
 build
 lib-rust/check-logic/target
 lib-cpp
+env-so

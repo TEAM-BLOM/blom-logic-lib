@@ -67,6 +67,26 @@ pub fn init_check(_board: Board, x: usize, y: usize) -> Result<Check, JsError> {
 }
 
 #[wasm_bindgen]
+pub fn init_obj(_board: &[i32], x: usize, y: usize) -> Result<Check, JsError> {
+    if _board.len() != 225 {
+        return Err(JsError::new("length is not valid"));
+    }
+    if x >= 15 || y >= 15 {
+        return Err(JsError::new("x or y is not valid"));
+    }
+    
+    let mut board = Board::new(225);
+    match board.set_board(&_board) {
+        Ok(_) => {},
+        Err(e) => return Err(JsError::new(&e))
+    }
+
+    let check = Check::new(board, x, y);
+
+    Ok(check)
+}
+
+#[wasm_bindgen]
 pub fn update_check_board(mut origin: Check, new_board: &[i32], x: usize, y: usize) -> Result<Check, JsError> {
     if x >= 15 || y >= 15 {
         return Err(JsError::new("x or y is not valid"));

@@ -62,7 +62,7 @@ impl Check {
                     break 'direction
                 },
             }
-            let idx = self.board.convert_to_index(x, y);
+            // let idx = self.board.convert_to_index(x, y);
 
             let (x_prev, y_prev, x_next, y_next): (usize, usize, usize, usize);
             match add_usize_int32(x, -dx) {
@@ -81,7 +81,7 @@ impl Check {
                 Some(_y) => y_next = _y,
                 None => y_next = 1000,
             }
-            let cur = self.board.get_board()[idx];
+            let cur = self.board.get_value(x, y);
             if self.board.is_valid(x, y) {
                 if cur == 1 { // 현재 방향으로 진행하며 흑돌이면 cnt 증가
                     cnt += 1;
@@ -92,7 +92,7 @@ impl Check {
                         이전 돌이 흑돌이라면 막힌 경우이므로 cnt 초기화와 loob break
                     */
                     if self.board.is_valid(x_prev, y_prev) {
-                        let prev = self.board.get_board()[self.board.convert_to_index(x_prev, y_prev)];
+                        let prev = self.board.get_value(x_prev, y_prev);
                         if prev == 0 {
                             break 'direction;
                         } else {
@@ -116,7 +116,7 @@ impl Check {
                     } else {
                         if self.board.is_valid(x_next, y_next) {
                             blk = true;
-                            if self.board.get_board()[self.board.convert_to_index(x_next, y_next)] == 1 {
+                            if self.board.get_value(x_next, y_next) == 1 {
                                 continue;
                             } else {
                                 break 'direction;
@@ -139,10 +139,10 @@ impl Check {
         let mut win: bool = false;
 
         let dir: [(i32, i32); 8] = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (-1, 1), (1, -1)];
-        let idx = self.board.convert_to_index(_x, _y);
-        println!("x: {}, y: {}", _x, _y);
-        println!("idx: {}", idx);
-        let turn = self.board.get_board()[idx];
+        // let idx = self.board.convert_to_index(_x, _y);
+        // println!("x: {}, y: {}", _x, _y);
+        // println!("idx: {}", idx);
+        let turn = self.board.get_value(_x, _y);
         if turn == 0 {
             // return Err(0);
             return Err(JsError::new("this position looks Invalid"));
@@ -173,9 +173,9 @@ impl Check {
                         break 'direction1
                     },
                 }
-                let idx = self.board.convert_to_index(x, y);
+                // let idx = self.board.convert_to_index(x, y);
 
-                if self.board.is_valid(x, y) && self.board.get_board()[idx] == turn {
+                if self.board.is_valid(x, y) && self.board.get_value(x, y) == turn {
                     cnt_1 += 1;
                 } else {
                     break 'direction1;
@@ -199,9 +199,9 @@ impl Check {
                         break 'direction2
                     },
                 }
-                let idx = self.board.convert_to_index(x, y);
+                // let idx = self.board.convert_to_index(x, y);
 
-                if self.board.is_valid(x, y) && self.board.get_board()[idx] == turn {
+                if self.board.is_valid(x, y) && self.board.get_value(x, y) == turn {
                     cnt_2 += 1;
                 } else {
                     break 'direction2;
@@ -226,11 +226,10 @@ impl Check {
         let (_x, _y) = self.current;
         let dir: [(i32, i32); 4] = [(1, 0), (0, 1), (1, 1), (-1, 1)];
 
-        let tmp = self.board.convert_to_index(_x, _y);
-        if self.board.get_board()[tmp] == -1 {
-            
+        // let tmp = self.board.convert_to_index(_x, _y);
+        if self.board.get_value(_x, _y) == -1 {
             return Ok(false);
-        } else if self.board.get_board()[tmp] == 0 {
+        } else if self.board.get_value(_x, _y) == 0 {
             // return Err(0);
             return Err(JsError::new("this position looks Invalid"));
         }
@@ -287,7 +286,7 @@ impl Check {
                     break 'direction
                 },
             }
-            let idx = self.board.convert_to_index(x, y);
+            // let idx = self.board.convert_to_index(x, y);
 
             let (x_next, y_next): (usize, usize);
             match add_usize_int32(x, dx) {
@@ -300,7 +299,7 @@ impl Check {
             }
 
             if self.board.is_valid(x, y) {
-                let cur = self.board.get_board()[idx];
+                let cur = self.board.get_value(x, y);
                 if cur == 1 {
                     cnt += 1;
                 } else if cur == -1 {
@@ -317,7 +316,7 @@ impl Check {
                         // 빈 곳일 경우는 33의 경우와 동일하므로, 그대로 사용
                         if self.board.is_valid(x_next, y_next) {
                             blk = true;
-                            if self.board.get_board()[self.board.convert_to_index(x_next, y_next)] == 1 {
+                            if self.board.get_value(x_next, y_next) == 1 {
                                 continue;
                             } else {
                                 break 'direction;
@@ -339,10 +338,10 @@ impl Check {
         let (_x, _y) = self.current;
         let dir: [(i32, i32); 4] = [(1, 0), (0, 1), (1, 1), (-1, 1)];
 
-        let tmp = self.board.convert_to_index(_x, _y);
-        if self.board.get_board()[tmp] == -1 {
+        // let tmp = self.board.convert_to_index(_x, _y);
+        if self.board.get_value(_x, _y) == -1 {
             return Ok(false);
-        } else if self.board.get_board()[tmp] == 0 {
+        } else if self.board.get_value(_x, _y) == 0 {
             // return Err(0);
             return Err(JsError::new("this position looks Invalid"));
         }
