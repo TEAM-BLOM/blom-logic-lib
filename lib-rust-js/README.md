@@ -1,28 +1,15 @@
 # How to use check logic lib
 
-<b>This lib is made for the web.  
-So if you want to use this lib in node.js, you cannot use js file directly.  
-</b>
+install: `npm i @r_seung_h/blom-logic`  
+or download from below asset.
+[download](https://github.com/TEAM-BLOM/blom-logic-lib/releases/download/v0.1.1/logic-web-0.1.1.zip)  
+version: 0.1.1 (npm package is 0.1.3)  
 
-<b>If you want to use this lib in node.js, you should build with `wasm-pack build --target nodejs`</b>
+<b>This lib is made for the web and bundler.</b>
 
-
-### Using example in web [index.html](../testWeb/index.html) and [test.html](../testWeb/test.html)
-
-## 1. Import wasm and Init module
-```js
-import init from './pkg/check_logic.js';
-
-const module = await init();
-```
-
-## 2. Use functions
-This lib provides functions below.  
-<b>All of functions can return error(JsError), so you should handle it.</b>
-
+# Support Functions
 - <b>init objects:</b>
-  - `init_board(board: Int32Array) => Board` : initialize board, <b>This function already have check_valid_board logic</b>
-  - `init_check(board: Board, x: number, y: number) => Check` : initialize check
+  - `init_obj(board: Int32Array, x: number, y: number) => Check` : initialize check with board and x, y
 - <b>update objects:</b>
   - `update_check_board(check: Check, new_board: Int32Array, x: number, y: number) => Check` : update check board with new board and x, y, <b>This function also have check_valid_board logic</b>
 - <b>check for a game:</b>
@@ -32,10 +19,61 @@ This lib provides functions below.
 - <b>check for debug:</b>
   - `check_valid_board(board: Int32Array) => boolean` : check if the board is valid
   - `print_address(check: Check) => number` : print address of check
+- <b>free objects:</b>  
+  - `free(check: Check) => void` : free check
+<br> </br>
+- <h3>Not Recommended</h3>
+  
+  - `init_board(board: Int32Array) => Board` : initialize board
+  - `init_check(board: Board, x: number, y: number) => Check` : initialize check
+
+## First way to use
+```bash
+npm i @r_seung_h/blom-logic
+npm i vite-plugin-wasm
+```
+<br/>  
+
+### 1. modify vite.config.ts
+```ts
+import wasm from 'vite-plugin-wasm';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+    plugins: [wasm()],
+    build: {
+        target: 'esnext',
+    }
+  });
+```
+build options is for top-level await. (it may be not support old browser)
+
+
+### 2. Import functions from pkg
+this way not use init() function.
+```ts
+import { init_obj,
+    update_check_board, 
+    check_win, 
+    check_33, 
+    check_44, 
+} from '@r_seung_h/blom-logic';
+```
+
+## Second way to use
+this way is recommended for the web (use public path).
+
+### 1. Import wasm and Init module
+```js
+import init from './pkg/check_logic.js';
+
+const module = await init();
+```
+
+### 2. Use functions
 
 ```js
-import { init_board, 
-    init_check, 
+import { init_obj,
     update_check_board, 
     check_win, 
     check_33, 
@@ -44,69 +82,3 @@ import { init_board,
     print_address 
 } from './pkg/check_logic.js';
 ```
-
-<b>All of objects are reference type, so you should free it after using.</b>
-```js
-// example check: Check, board: Board
-check.free();
-board.free();
-```
-
-<br />
-
----
-
-### Make WebAssembly
-
-#### 1. Install rust and wasm-pack
-This environment is for WSL2(Windows Subsystem for Linux, Ubuntu 22.04).
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-cargo new --lib project-name
-```
-
-#### 2. Build wasm
-```bash
-cd project-name
-wasm-pack build --target web
-```
-
-#### 3. Using wasm
-just import wasm and js files from pkg folder.
-
-```js
-import init, { myFunction } from "./pkg/my_wasm.js"
-```
-
-<br/>
-<br/>
-
-### Using wasm-bindgen
-
-#### 1. Types on js and wasm-bindgen
-reference type with slice on rust -> js  
-&[int32] on rust -> Int32Array on js
-
-reference : https://rustwasm.github.io/wasm-bindgen/reference/reference-types.html
-
-
-#### 2. Use struct on wasm-bindgen
-```rust
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
-pub struct myStruct {}
-
-#[wasm_bindgen]
-impl myStruct {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> myStruct {
-        myStruct {}
-    }
-
-    #[wasm_bindgen]
-    pub fn necessary_function() {}
-}
-```
-
-
