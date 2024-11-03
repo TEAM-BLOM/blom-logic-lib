@@ -31,6 +31,14 @@ pub fn check_valid_board(board: &[i32]) -> bool {
     return true;
 }
 
+impl Clone for Board {
+    fn clone(&self) -> Self {
+        Board {
+            board: self.board.clone(),
+        }
+    }
+}
+
 impl Board {
     pub fn get_board(&self) -> &Vec<i32> {
         &self.board

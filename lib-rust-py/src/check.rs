@@ -74,6 +74,9 @@ impl Check {
                 },
             }
             let idx = self.board.convert_to_index(x, y);
+            if idx >= 225 {
+                continue;
+            }
 
             let (x_prev, y_prev, x_next, y_next): (usize, usize, usize, usize);
             match add_usize_int32(x, -dx) {
@@ -299,6 +302,9 @@ impl Check {
                 },
             }
             let idx = self.board.convert_to_index(x, y);
+            if idx >= 225 {
+                continue;
+            }
 
             let (x_next, y_next): (usize, usize);
             match add_usize_int32(x, dx) {

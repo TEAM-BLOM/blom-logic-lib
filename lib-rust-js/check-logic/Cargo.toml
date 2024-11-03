@@ -1,6 +1,6 @@
 [package]
-name = "check-logic"
-version = "0.1.0"
+name = "blom-logic"
+version = "0.1.8"
 edition = "2021"
 
 [lib]

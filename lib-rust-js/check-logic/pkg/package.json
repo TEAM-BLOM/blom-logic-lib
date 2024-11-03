@@ -1,15 +1,20 @@
 {
-  "name": "check-logic",
+  "name": "@r_seung_h/blom-logic",
+  "description": "Omok's win and prohibit logic",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "files": [
-    "check_logic_bg.wasm",
-    "check_logic.js",
-    "check_logic.d.ts"
+    "blom_logic_bg.wasm",
+    "blom_logic.js",
+    "blom_logic_bg.js",
+    "blom_logic.d.ts"
   ],
-  "main": "check_logic.js",
-  "types": "check_logic.d.ts",
+  "main": "blom_logic.js",
+  "types": "blom_logic.d.ts",
   "sideEffects": [
+    "./blom_logic.js",
     "./snippets/*"
-  ]
+  ],
+  "author": "r_seung_h",
+  "license": "MIT"
 }

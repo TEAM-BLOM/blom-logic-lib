@@ -1,4 +1,4 @@
-use crate::module::board::Board;
+use crate::board::Board;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

@@ -1,14 +1,12 @@
-mod module {
-    pub mod board;
-    pub mod check;
-}
+mod board;
+mod check;
+
+use board::Board;
+use check::Check;
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
-    use crate::module::board::Board;
-    use crate::module::check::Check;
-
+    use super::*;
     #[test]
     fn it_works() {
         let mut array: [i32; 225] = [0; 225];
@@ -34,12 +32,10 @@ mod tests {
 }
 
 use wasm_bindgen::prelude::*;
-use crate::module::check::Check;
-use crate::module::board::Board;
 
 #[wasm_bindgen]
 pub fn check_valid_board(_board: &[i32]) -> bool {
-    module::board::check_valid_board(_board)
+    board::check_valid_board(_board)
 }
 
 #[wasm_bindgen]
